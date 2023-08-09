@@ -34,11 +34,11 @@ data = StringIO(response.text)
 df = pd.read_csv(data)
 lesson_df = pd.read_csv("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv")
 def main():
-    st.title('CSVファイルアップローダー')
+    st.title('時間割作成アプリ')
 uploaded_file = st.file_uploader("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv", type="csv")
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-    st.write(df)  # アップロードされたデータを表示
+if uploaded_file is not None:
+        data = pd.read_csv(uploaded_file)
+        st.write(data)
 if __name__ == "__main__":
     main()
 
