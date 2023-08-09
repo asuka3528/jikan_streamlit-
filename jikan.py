@@ -7,6 +7,9 @@ import pulp
 import streamlit as st
 import pandas as pd
 
+import requests
+from io import StringIO
+
 # タイトルとテキストを記入
 st.title('Streamlit 時間割')
 
@@ -23,8 +26,7 @@ six_period = ["総合探究","自主自学"] #6限のみの授業
 subject_dict = {s:n for s,n in zip(subject_list,[4,5,5,4,4,2,2,2,1,3])} #必要授業数
 
 
-import requests
-from io import StringIO
+
 
 url = "https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv"
 
@@ -35,10 +37,21 @@ df = pd.read_csv(data)
 lesson_df = pd.read_csv("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv")
 def main():
     st.title('時間割作成アプリ')
-    uploaded_file = st.file_uploader("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv", type="csv")
+    uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv")
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
         st.write(data)
+        generate_timetable(data) #時間割作成関数を実行
+
+def generate_timetable(lesson_df):
+    # この部分にモデルの定義や最適化のコードを入れる
+    
+    # 最適解の確認と結果の表示
+    if model.solve() == pulp.LpStatusOptimal:
+        st.write("最適解を見つけました！")
+        export_table(3,1)
+    else:
+        st.write("最適解を見つけることができませんでした。")
 
 if __name__ == "__main__":
     main()
