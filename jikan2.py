@@ -22,25 +22,8 @@ Classroom_mobility = ["芸術","体育","情報","家庭科"] #移動教室授�
 six_period = ["総合探究","自主自学"] #6限のみの授業
 subject_dict = {s:n for s,n in zip(subject_list,[4,5,5,4,4,2,2,2,1,3])} #必要授業数
 
-
-import requests
-from io import StringIO
-
-url = "https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv"
-
-response = requests.get(url)
-data = StringIO(response.text)
-
-df = pd.read_csv(data)
-lesson_df = pd.read_csv("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv")
-def main():
-    st.title('CSVファイルアップローダー')
-uploaded_file = st.file_uploader("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv", type="csv")
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-    st.write(df)  # アップロードされたデータを表示
-if __name__ == "__main__":
-    main()
+# Excelを読み込む
+lesson_df = pd.read_excel("C:/Users/fssga/OneDrive/デスクトップ/時間割.xlsx")
 
 
 
