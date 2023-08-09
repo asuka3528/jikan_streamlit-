@@ -129,7 +129,6 @@ model += pulp.lpSum([np.max([z[d,p,g] for g in grade_list]) - np.min([z[d,p,g] f
 
 model.solve()
 
-git push origin master
 def export_table(g,c):
     timetable_df = pd.DataFrame(index=period, columns=week)
 
