@@ -35,12 +35,24 @@ df = pd.read_csv(data)
 lesson_df = pd.read_csv("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv")
 def main():
     st.title('時間割作成アプリ')
-uploaded_file = st.file_uploader("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv", type="csv")
-if uploaded_file is not None:
+    uploaded_file = st.file_uploader("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv", type="csv")
+    if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
         st.write(data)
+
 if __name__ == "__main__":
     main()
+
+# デバッグのためのコード
+g = 1  # ここで適切な値を設定
+c = 1  # ここで適切な値を設定
+df = lesson_df[lesson_df["gr"] == g]
+s = "数学"  # 例として数学を設定
+if df[df["cl"] == c][s].empty:
+    print(f"No data for cl = {c}, s = {s}")
+else:
+    t = df[df["cl"] == c][s].values[0]
+
 
 
 
@@ -131,13 +143,14 @@ for d in week:
         for g in grade_list:
             for c in class_dict[g]:
                 for s in subject_list:
-                    df = lesson_df[lesson_df["gr"] == g]
-                    if df[df["cl"] == c][s].empty:
-                      print(f"No data for cl = {c}, s = {s}")
+                    df = lesson_df[(lesson_df["gr"] == g) & (lesson_df["cl"] == c)]
+                    if df[s].empty:
+                        print(f"No data for cl = {c}, s = {s}")
                     else:
-                      t = df[df["cl"] == c][s].values[0]
-                    if (d, p, t) in y:   # <- Check if the key exists in y
-                      y[d,p,t] += x[d,p,g,c,s] # <- ここを修正
+                        t = df[s].values[0]
+                        if (d, p, t) in y:
+                            model += y[d,p,t] >= x[d,p,g,c,s]  # <- ここを修正
+
 
 
 #(6)1教員が1日に行う授業数の上下限を守る
@@ -168,4 +181,9 @@ def export_table(g,c):
 
 export_table(3,1)
 
+if model.solve() == pulp.LpStatusOptimal:
+    st.write("最適解を見つけました！")
+    export_table(3,1)
+else:
+    st.write("最適解を見つけることができませんでした。")
 
