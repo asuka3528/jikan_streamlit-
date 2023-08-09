@@ -118,37 +118,6 @@ for d in week:
 
 
 
-#(4)体育など移動教室は連続しない
-for d in week:
-    for p in period[:-1]:  # 最後の時限は除く
-        for g in grade_list:
-            for c in class_dict[g]:
-                # 移動教室のみを対象にする
-                for s in Classroom_mobility:
-                    # 次の時限も存在する場合のみ制約を追加
-                    if (d, p+1, g, c, s) in x:
-                        model += x[d,p,g,c,s] + x[d,p+1,g,c,s] <= 1
-
-
-#(5)総合探究と自主自学の制約
-#➀総合探究と自主自学は6限
-for d in week:
-    for p in period[:5]:
-        for g in grade_list:
-            for c in class_dict[g]:
-                model += pulp.lpSum([x[d,p,g,c,s] for s in six_period]) == 0
-
-#➁総合探究と自主自学は学年で曜日を統一して行う
-for d in week:
-    for g in grade_list:
-        for c in class_dict[g][:-1]:
-            for s in six_period:
-                model += x[d,6,g,c,s] == x[d,6,g,c+1,s]
-
-#➂総合探究と自主自学は異なる学年で同じ時間には行わない
-for d in week:
-    for s in six_period:
-        model += pulp.lpSum(x[d,6,g,1,s] for g in grade_list) <= 1
 
 #yをxの関数として定義 y=f(x)
 for d in week:
@@ -194,9 +163,30 @@ def export_table(g,c):
 
 export_table(3,1)
 
-if model.solve() == pulp.LpStatusOptimal:
-    st.write("最適解を見つけました！")
-    export_table(3,1)
-else:
-    st.write("最適解を見つけることができませんでした。")
+# ・・・（略）
+
+def define_model(lesson_df):
+    # ここで model の定義や制約の追加を行います。
+    model = pulp.LpProblem("model",pulp.LpMinimize)
+    
+    # 以前のコードの model の定義や制約の追加の部分をここに移動
+    
+    return model
+
+def generate_timetable(lesson_df):
+    model = define_model(lesson_df)  # モデルの定義
+    result_status = model.solve()  # 最適化の実行
+    
+    # 最適解の確認と結果の表示
+    if result_status == pulp.LpStatusOptimal:
+        st.write("最適解を見つけました！")
+        export_table(3,1)
+    else:
+        st.write("最適解を見つけることができませんでした。")
+
+# ・・・（略）
+
+if __name__ == "__main__":
+    main()
+
 
