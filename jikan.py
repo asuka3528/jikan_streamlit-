@@ -155,9 +155,13 @@ def export_table(g,c):
 
     for d in week:
         for p in period:
+            assigned = False
             for s in subject_list:
                 if x[d,p,g,c,s].value() == 1.0:
                     timetable_df.at[p, d] = s  # DataFrameに授業名を代入
+                    assigned = True
+            if not assigned:
+                timetable_df.at[p, d] = "未割り当て"  # 未割り当ての場合の処理
 
     print(timetable_df)
 
@@ -181,10 +185,13 @@ def generate_timetable(lesson_df):
     if result_status == pulp.LpStatusOptimal:
         st.write("最適解を見つけました！")
         export_table(3,1)
+    elif result_status == pulp.LpStatusInfeasible:
+        st.write("モデルが不可能です。制約を再確認してください。")
     else:
         st.write("最適解を見つけることができませんでした。")
 
-# ・・・（略）
+
+
 
 if __name__ == "__main__":
     main()
