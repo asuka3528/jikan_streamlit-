@@ -207,11 +207,15 @@ def main():
 
     uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv")
 
-    if uploaded_file is not None:
-        data = pd.read_csv(uploaded_file)
-        st.session_state.uploaded_data = data  # データをセッションステートに保存
-        st.write(data)
-        generate_timetable(data)  # 時間割作成関数を実行
-    elif st.session_state.uploaded_data is not None:
-        st.write(st.session_state.uploaded_data)
-        generate_timetable(st.session_state.uploaded_data)  # 保存されたデータを使って時間割を生成
+    state = st.session_state
+
+if "uploaded_file" not in state:
+    state.uploaded_file = None
+
+if state.uploaded_file is None:
+    state.uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv")
+
+if state.uploaded_file is not None:
+    data = pd.read_csv(state.uploaded_file)
+    st.write(data)
+    generate_timetable(data)  # 時間割作成関数を実行
