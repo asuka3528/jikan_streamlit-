@@ -198,3 +198,20 @@ if __name__ == "__main__":
     main()
 
 
+def main():
+    st.title('時間割作成アプリ')
+
+    # 初めてアプリを実行するかどうかをチェック
+    if "uploaded_data" not in st.session_state:
+        st.session_state.uploaded_data = None
+
+    uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv")
+
+    if uploaded_file is not None:
+        data = pd.read_csv(uploaded_file)
+        st.session_state.uploaded_data = data  # データをセッションステートに保存
+        st.write(data)
+        generate_timetable(data)  # 時間割作成関数を実行
+    elif st.session_state.uploaded_data is not None:
+        st.write(st.session_state.uploaded_data)
+        generate_timetable(st.session_state.uploaded_data)  # 保存されたデータを使って時間割を生成
