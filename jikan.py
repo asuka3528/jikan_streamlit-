@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import pulp
+model = pulp.LpProblem("MyModel", pulp.LpMinimize)
 
 # 必要なライブラリをインポート
 import streamlit as st
