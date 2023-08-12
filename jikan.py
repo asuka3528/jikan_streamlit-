@@ -40,6 +40,7 @@ def main():
     st.title('時間割作成アプリ')
     uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv", key="unique_file_uploader_key")
 
+
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
         st.write(data)
@@ -208,7 +209,8 @@ def main():
 
     # セッション状態にuploaded_dataが存在しない場合、アップローダーを表示
     if st.session_state.uploaded_data is None:
-        uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv", key="unique_key_1")
+        uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv", key="unique_file_uploader_key")
+
         if uploaded_file is not None:
             st.session_state.uploaded_data = pd.read_csv(uploaded_file)
             st.write(st.session_state.uploaded_data)
