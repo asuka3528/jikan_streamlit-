@@ -26,9 +26,6 @@ Classroom_mobility = ["芸術","体育","情報","家庭科"] #移動教室授�
 six_period = ["総合探究","自主自学"] #6限のみの授業
 subject_dict = {s:n for s,n in zip(subject_list,[4,5,5,4,4,2,2,2,1,3])} #必要授業数
 
-
-
-
 url = "https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv"
 
 response = requests.get(url)
@@ -46,34 +43,6 @@ def main():
         st.write(data)
         generate_timetable(data) #時間割作成関数を実行
 
-def generate_timetable(lesson_df):
-    # この部分にモデルの定義や最適化のコードを入れる
-    
-    # 最適解の確認と結果の表示
-    if model.solve() == pulp.LpStatusOptimal:
-        st.write("最適解を見つけました！")
-        export_table(3,1)
-    else:
-        st.write("最適解を見つけることができませんでした。")
-
-if __name__ == "__main__":
-    main()
-
-# デバッグのためのコード
-g = 1  # ここで適切な値を設定
-c = 1  # ここで適切な値を設定
-df = lesson_df[lesson_df["gr"] == g]
-s = "数学"  # 例として数学を設定
-if df[df["cl"] == c][s].empty:
-    print(f"No data for cl = {c}, s = {s}")
-else:
-    t = df[df["cl"] == c][s].values[0]
-
-
-
-
-
-model = pulp.LpProblem("model",pulp.LpMinimize)
 x = {}
 y = {}
 z = {}
@@ -84,7 +53,6 @@ for d in week:
             for c in class_dict[g]:
                 for s in subject_list:
                     x[d,p,g,c,s] = pulp.LpVariable(cat="Binary",name=f"x_{d}_{p}_{g}_{c}_{s}")
-
 
 #y_曜日_時限_教員
 for d in week:
@@ -117,11 +85,6 @@ for d in week:
         for c in class_dict[g]:
             for s in subject_list:
                 model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 1
-
-
-
-
-
 #yをxの関数として定義 y=f(x)
 for d in week:
     for p in period:
@@ -135,8 +98,6 @@ for d in week:
                         t = df[s].values[0]
                         if (d, p, t) in y:
                             model += y[d,p,t] >= x[d,p,g,c,s]  # <- ここを修正
-
-
 
 #(6)1教員が1日に行う授業数の上下限を守る
 for d in week:
@@ -170,6 +131,30 @@ def export_table(g,c):
 
 export_table(3,1)
 
+def generate_timetable(lesson_df):
+    # この部分にモデルの定義や最適化のコードを入れる
+    
+    # 最適解の確認と結果の表示
+    if model.solve() == pulp.LpStatusOptimal:
+        st.write("最適解を見つけました！")
+        export_table(3,1)
+    else:
+        st.write("最適解を見つけることができませんでした。")
+if __name__ == "__main__":
+    main()
+
+# デバッグのためのコード
+g = 1  # ここで適切な値を設定
+c = 1  # ここで適切な値を設定
+df = lesson_df[lesson_df["gr"] == g]
+s = "数学"  # 例として数学を設定
+if df[df["cl"] == c][s].empty:
+    print(f"No data for cl = {c}, s = {s}")
+else:
+    t = df[df["cl"] == c][s].values[0]
+
+model = pulp.LpProblem("model",pulp.LpMinimize)
+
 # ・・・（略）
 
 def define_model(lesson_df):
@@ -192,31 +177,25 @@ def generate_timetable(lesson_df):
         st.write("モデルが不可能です。制約を再確認してください。")
     else:
         st.write("最適解を見つけることができませんでした。")
-
-
-
-
+                
 if __name__ == "__main__":
     main()
 
-
 def main():
     st.title('時間割作成アプリ')
-
     # 初めてアプリを実行するかどうかをチェック
     if "uploaded_data" not in st.session_state:
         st.session_state.uploaded_data = None
 
     # セッション状態にuploaded_dataが存在しない場合、アップローダーを表示
-    if st.session_state.uploaded_data is None:
+if st.session_state.uploaded_data is None:
         uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv", key="unique_file_uploader_key")
 
-        if uploaded_file is not None:
-            st.session_state.uploaded_data = pd.read_csv(uploaded_file)
-            st.write(st.session_state.uploaded_data)
-            generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
-    else:
+if uploaded_file is not None:
+    st.session_state.uploaded_data = pd.read_csv(uploaded_file)
+    st.write(st.session_state.uploaded_data)
+    generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
+else:
         # セッション状態にuploaded_dataが存在する場合、そのデータを表示
-        st.write(st.session_state.uploaded_data)
-        generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
-
+    st.write(st.session_state.uploaded_data)
+    generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
