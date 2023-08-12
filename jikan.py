@@ -38,7 +38,8 @@ df = pd.read_csv(data)
 lesson_df = pd.read_csv("https://docs.google.com/spreadsheets/d/1nz31-E6E92Xzmw7JpUP6YQdc9UnYQcdb6OwWXQoDg7s/export?format=csv")
 def main():
     st.title('時間割作成アプリ')
-    uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv")
+    uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv", key="unique_file_uploader_key")
+
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
         st.write(data)
