@@ -6,14 +6,10 @@ model = pulp.LpProblem("MyModel", pulp.LpMinimize)
 
 # 必要なライブラリをインポート
 import streamlit as st
-import pandas as pd
-
 import requests
 from io import StringIO
-
 # タイトルとテキストを記入
 st.title('Streamlit 時間割')
-
 #基本情報のデータ
 teacher_list = [f'教員{i}' for i in range(22)]
 subject_list = ["英語","数学","国語","理科","社会","芸術","体育","情報","総合探究","自主自学"]
@@ -129,7 +125,7 @@ def export_table(g,c):
 
     print(timetable_df)
 
-export_table(3,1)
+# export_table(3,1)
 
 def generate_timetable(lesson_df):
     # この部分にモデルの定義や最適化のコードを入れる
@@ -177,25 +173,26 @@ def generate_timetable(lesson_df):
         st.write("モデルが不可能です。制約を再確認してください。")
     else:
         st.write("最適解を見つけることができませんでした。")
-                
+
 if __name__ == "__main__":
     main()
 
 def main():
     st.title('時間割作成アプリ')
+
     # 初めてアプリを実行するかどうかをチェック
     if "uploaded_data" not in st.session_state:
         st.session_state.uploaded_data = None
 
     # セッション状態にuploaded_dataが存在しない場合、アップローダーを表示
-if st.session_state.uploaded_data is None:
+    if st.session_state.uploaded_data is None:
         uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv", key="unique_file_uploader_key")
 
-if uploaded_file is not None:
-    st.session_state.uploaded_data = pd.read_csv(uploaded_file)
-    st.write(st.session_state.uploaded_data)
-    generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
-else:
+        if uploaded_file is not None:
+            st.session_state.uploaded_data = pd.read_csv(uploaded_file)
+            st.write(st.session_state.uploaded_data)
+            generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
+    else:
         # セッション状態にuploaded_dataが存在する場合、そのデータを表示
-    st.write(st.session_state.uploaded_data)
-    generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
+        st.write(st.session_state.uploaded_data)
+        generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
