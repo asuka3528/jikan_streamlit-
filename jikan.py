@@ -152,4 +152,40 @@ def export_table(g,c):
 
     print(timetable_df)
 
+def generate_timetable(lesson_df):
+    model = define_model(lesson_df)  # モデルの定義
+    result_status = model.solve()  # 最適化の実行
+    
+    # 最適解の確認と結果の表示
+    if result_status == pulp.LpStatusOptimal:
+        st.write("最適解を見つけました！")
+        export_table(3,1)
+    elif result_status == pulp.LpStatusInfeasible:
+        st.write("モデルが不可能です。制約を再確認してください。")
+    else:
+        st.write("最適解を見つけることができませんでした。")
+
+if __name__ == "__main__":
+    main()
+
+def main():
+    st.title('時間割作成アプリ')
+
+    # 初めてアプリを実行するかどうかをチェック
+    if "uploaded_data" not in st.session_state:
+        st.session_state.uploaded_data = None
+
+    # セッション状態にuploaded_dataが存在しない場合、アップローダーを表示
+    if st.session_state.uploaded_data is None:
+        uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv")
+
+        if uploaded_file is not None:
+            st.session_state.uploaded_data = pd.read_csv(uploaded_file)
+            st.write(st.session_state.uploaded_data)
+            generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
+    else:
+        # セッション状態にuploaded_dataが存在する場合、そのデータを表示
+        st.write(st.session_state.uploaded_data)
+        generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
+
 export_table(3,1)
