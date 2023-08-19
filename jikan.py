@@ -99,7 +99,7 @@ for d in week:
 for d in week:
     for t in teacher_list:
         model += pulp.lpSum([y[d,p,t] for p in period]) <= 6
-        model += pulp.lpSum([y[d,p,t] for p in period]) >= 4
+        model += pulp.lpSum([y[d,p,t] for p in period]) >= 1
 
 for d in week:
     for p in period:
