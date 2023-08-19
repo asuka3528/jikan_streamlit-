@@ -67,17 +67,17 @@ for d in week:
                 model += pulp.lpSum([x[d,p,g,c,s] for s in subject_list]) == 1
 
  #(2)各教科sは1週間の必要授業数だけ行う
-# for g in grade_list:
-#     for c in class_dict[g]:
-#         for s in subject_list:
-#             model += pulp.lpSum([x[d,p,g,c,s] for d in week for p in period]) == subject_dict[s]
+for g in grade_list:
+    for c in class_dict[g]:
+        for s in subject_list:
+            model += pulp.lpSum([x[d,p,g,c,s] for d in week for p in period]) == subject_dict[s]
 
 # #(3)教科は 1 日の授業数の上下限を守る
-# for d in week:
-#     for g in grade_list:
-#         for c in class_dict[g]:
-#             for s in subject_list:
-#                 model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 3
+for d in week:
+    for g in grade_list:
+        for c in class_dict[g]:
+            for s in subject_list:
+                model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 3
 
 
 
@@ -154,7 +154,22 @@ def export_table(g,c):
 
     print(timetable_df)
 
+# 問題の定義
+    prob = pulp.LpProblem("MyProblem", pulp.LpMinimize)
+# ... ここで変数、目的関数、制約の定義 ...
+# 問題を解く
+    prob.solve()
+    # result_statusの定義
+    result_status = pulp.LpStatus[prob.status]
 
+    # 最適解の確認と結果の表示
+    if result_status == pulp.LpStatusOptimal:
+        st.write("最適解を見つけました！")
+        export_table(3,1)
+    elif result_status == pulp.LpStatusInfeasible:
+        st.write("モデルが不可能です。制約を再確認してください。")
+    else:
+        st.write("最適解を見つけることができませんでした。")
 
 def generate_timetable(lesson_df):
     # この部分にモデルの定義や最適化のコードを入れる
