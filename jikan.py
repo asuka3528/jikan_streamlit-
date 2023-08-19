@@ -153,11 +153,7 @@ def export_table(g,c):
                     timetable_df.at[p, d] = s  # DataFrameに授業名を代入
 
     print(timetable_df)
-
-def generate_timetable(lesson_df):
-    model = define_model(lesson_df)  # モデルの定義
-    result_status = model.solve()  # 最適化の実行
-    
+     
     # 最適解の確認と結果の表示
     if result_status == pulp.LpStatusOptimal:
         st.write("最適解を見つけました！")
