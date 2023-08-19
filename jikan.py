@@ -66,18 +66,18 @@ for d in week:
             for c in class_dict[g]:
                 model += pulp.lpSum([x[d,p,g,c,s] for s in subject_list]) == 1
 
-#(2)各教科sは1週間の必要授業数だけ行う
-for g in grade_list:
-    for c in class_dict[g]:
-        for s in subject_list:
-            model += pulp.lpSum([x[d,p,g,c,s] for d in week for p in period]) == subject_dict[s]
+ #(2)各教科sは1週間の必要授業数だけ行う
+# for g in grade_list:
+#     for c in class_dict[g]:
+#         for s in subject_list:
+#             model += pulp.lpSum([x[d,p,g,c,s] for d in week for p in period]) == subject_dict[s]
 
-#(3)教科は 1 日の授業数の上下限を守る
-for d in week:
-    for g in grade_list:
-        for c in class_dict[g]:
-            for s in subject_list:
-                model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 3
+# #(3)教科は 1 日の授業数の上下限を守る
+# for d in week:
+#     for g in grade_list:
+#         for c in class_dict[g]:
+#             for s in subject_list:
+#                 model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 3
 
 
 
@@ -96,23 +96,23 @@ for d in week:
 
 #(5)総合探究と自主自学の制約
 #➀総合探究と自主自学は6限
-for d in week:
-    for p in period[:5]:
-        for g in grade_list:
-            for c in class_dict[g]:
-                model += pulp.lpSum([x[d,p,g,c,s] for s in six_period]) == 0
+# for d in week:
+#     for p in period[:5]:
+#         for g in grade_list:
+#             for c in class_dict[g]:
+#                 model += pulp.lpSum([x[d,p,g,c,s] for s in six_period]) == 0
 
-#➁総合探究と自主自学は学年で曜日を統一して行う
-for d in week:
-    for g in grade_list:
-        for c in class_dict[g][:-1]:
-            for s in six_period:
-                model += x[d,6,g,c,s] == x[d,6,g,c+1,s]
+# #➁総合探究と自主自学は学年で曜日を統一して行う
+# for d in week:
+#     for g in grade_list:
+#         for c in class_dict[g][:-1]:
+#             for s in six_period:
+#                 model += x[d,6,g,c,s] == x[d,6,g,c+1,s]
 
-#➂総合探究と自主自学は異なる学年で同じ時間には行わない
-for d in week:
-    for s in six_period:
-        model += pulp.lpSum(x[d,6,g,1,s] for g in grade_list) <= 1
+# #➂総合探究と自主自学は異なる学年で同じ時間には行わない
+# for d in week:
+#     for s in six_period:
+#         model += pulp.lpSum(x[d,6,g,1,s] for g in grade_list) <= 1
 
 #yをxの関数として定義 y=f(x)
 for d in week:
@@ -132,7 +132,7 @@ for d in week:
 for d in week:
     for t in teacher_list:
         model += pulp.lpSum([y[d, p, t] for p in period]) <= 6
-        model += pulp.lpSum([y[d, p, t] for p in period]) >= 4
+        model += pulp.lpSum([y[d, p, t] for p in period]) >= 1
 
 for d in week:
     for p in period:
