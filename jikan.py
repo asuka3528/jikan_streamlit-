@@ -172,6 +172,7 @@ def export_table(g,c):
         st.write("最適解を見つけることができませんでした。")
 
 def generate_timetable(lesson_df):
+    model = pulp.LpProblem("model", pulp.LpMinimize)
     # この部分にモデルの定義や最適化のコードを入れる
     
     # 最適解の確認と結果の表示
@@ -202,5 +203,5 @@ def main():
         st.write(st.session_state.uploaded_data)
         lesson_df = st.session_state.uploaded_data
         generate_timetable(lesson_df)
-
-export_table(3,1)
+    
+    main()
