@@ -83,15 +83,15 @@ for d in week:
 
 
 #(4)体育など移動教室は連続しない
-for d in week:
-    for p in period[:-1]:  # 最後の時限は除く
-        for g in grade_list:
-            for c in class_dict[g]:
-                # 移動教室のみを対象にする
-                for s in Classroom_mobility:
-                    # 次の時限も存在する場合のみ制約を追加
-                    if (d, p+1, g, c, s) in x:
-                        model += x[d,p,g,c,s] + x[d,p+1,g,c,s] <= 1
+# for d in week:
+#     for p in period[:-1]:  # 最後の時限は除く
+#         for g in grade_list:
+#             for c in class_dict[g]:
+#                 # 移動教室のみを対象にする
+#                 for s in Classroom_mobility:
+#                     # 次の時限も存在する場合のみ制約を追加
+#                     if (d, p+1, g, c, s) in x:
+#                         model += x[d,p,g,c,s] + x[d,p+1,g,c,s] <= 1
 
 
 #(5)総合探究と自主自学の制約
@@ -154,6 +154,14 @@ def export_table(g,c):
 
     print(timetable_df)
 
+# 問題の定義
+    prob = pulp.LpProblem("MyProblem", pulp.LpMinimize)
+# ... ここで変数、目的関数、制約の定義 ...
+# 問題を解く
+    prob.solve()
+    # result_statusの定義
+    result_status = pulp.LpStatus[prob.status]
+
     # 最適解の確認と結果の表示
     if result_status == pulp.LpStatusOptimal:
         st.write("最適解を見つけました！")
@@ -163,6 +171,15 @@ def export_table(g,c):
     else:
         st.write("最適解を見つけることができませんでした。")
 
+def generate_timetable(lesson_df):
+    # この部分にモデルの定義や最適化のコードを入れる
+    
+    # 最適解の確認と結果の表示
+    if model.solve() == pulp.LpStatusOptimal:
+        st.write("最適解を見つけました！")
+        export_table(3,1)
+    else:
+        st.write("最適解を見つけることができませんでした。")
 
 def main():
     st.title('時間割作成アプリ')
