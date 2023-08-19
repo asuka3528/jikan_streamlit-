@@ -110,9 +110,9 @@ for d in week:
                 model += x[d,6,g,c,s] == x[d,6,g,c+1,s]
 
 # #➂総合探究と自主自学は異なる学年で同じ時間には行わない
-# for d in week:
-#     for s in six_period:
-#         model += pulp.lpSum(x[d,6,g,1,s] for g in grade_list) <= 1
+for d in week:
+    for s in six_period:
+        model += pulp.lpSum(x[d,6,g,1,s] for g in grade_list) <= 1
 
 #yをxの関数として定義 y=f(x)
 for d in week:
