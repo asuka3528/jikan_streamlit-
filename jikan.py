@@ -96,18 +96,18 @@ for d in week:
 
 #(5)総合探究と自主自学の制約
 #➀総合探究と自主自学は6限
-# for d in week:
-#     for p in period[:5]:
-#         for g in grade_list:
-#             for c in class_dict[g]:
-#                 model += pulp.lpSum([x[d,p,g,c,s] for s in six_period]) == 0
+for d in week:
+    for p in period[:5]:
+        for g in grade_list:
+            for c in class_dict[g]:
+                model += pulp.lpSum([x[d,p,g,c,s] for s in six_period]) == 0
 
 # #➁総合探究と自主自学は学年で曜日を統一して行う
-# for d in week:
-#     for g in grade_list:
-#         for c in class_dict[g][:-1]:
-#             for s in six_period:
-#                 model += x[d,6,g,c,s] == x[d,6,g,c+1,s]
+for d in week:
+    for g in grade_list:
+        for c in class_dict[g][:-1]:
+            for s in six_period:
+                model += x[d,6,g,c,s] == x[d,6,g,c+1,s]
 
 # #➂総合探究と自主自学は異なる学年で同じ時間には行わない
 # for d in week:
