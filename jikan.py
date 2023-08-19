@@ -202,3 +202,5 @@ def main():
         st.write(st.session_state.uploaded_data)
         lesson_df = st.session_state.uploaded_data
         generate_timetable(lesson_df)
+
+export_table(3,1)
