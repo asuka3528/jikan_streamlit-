@@ -2,10 +2,7 @@
 import pandas as pd
 import numpy as np
 import pulp
-
-# 必要なライブラリをインポート
 import streamlit as st
-import pandas as pd
 
 # タイトルとテキストを記入
 st.title('Streamlit 時間割')
@@ -31,7 +28,7 @@ def main():
 
 
 
-model = pulp.LpProblem("model",pulp.LpMinimize)
+model = pulp.LpProblem("model", pulp.LpMinimize)
 x = {}
 y = {}
 z = {}
@@ -47,14 +44,20 @@ for d in week:
 #y_曜日_時限_教員
 for d in week:
     for p in period:
-        for t in teacher_list:
-            y[d,p,t] = pulp.LpVariable(cat="Binary",name=f"y_{d}_{p}_{t}")
-
-#z_曜日_時限_学年
+        for t in teacher_list:  # 教員リストを使う
+            y[d, p, t] = pulp.LpVariable(cat="Binary", name=f"y_{d}_{p}_{t}")
+            for g in grade_list:
+                for c in class_dict[g]:
+                    for s in subject_list:
+                        df = lesson_df[lesson_df["gr"] == g]
+                        teacher_name = df[df["cl"] == c][s].values[0]
+                        if (d, p, teacher_name) in y:  # 教員の名前をキーとして使用
+                            model += y[d, p, teacher_name] >= x[d, p, g, c, s]
+# z_曜日_時限_学年
 for d in week:
     for p in period:
         for g in grade_list:
-            z[d,p,g] = pulp.LpVariable(cat="Integer",name=f"z_{d}_{p}_{g}")
+            z[d, p, g] = pulp.LpVariable(cat="Continuous", name=f"z_{d}_{p}_{g}")
 
 #(1)1 つの時限では必ず 1 つ授業を行う
 for d in week:
@@ -123,14 +126,13 @@ for d in week:
                     else:
                       t = df[df["cl"] == c][s].values[0]
                     if (d, p, t) in y:   # <- Check if the key exists in y
-                      y[d,p,t] += x[d,p,g,c,s] # <- ここを修正
-
+                      model += y[d,p,t] >= x[d,p,g,c,s]
 
 #(6)1教員が1日に行う授業数の上下限を守る
 for d in week:
     for t in teacher_list:
-        model += pulp.lpSum([y[d,p,t] for p in period]) <= 6
-        model += pulp.lpSum([y[d,p,t] for p in period]) >= 4
+        model += pulp.lpSum([y[d, p, t] for p in period]) <= 6
+        model += pulp.lpSum([y[d, p, t] for p in period]) >= 4
 
 for d in week:
     for p in period:
@@ -170,22 +172,22 @@ if __name__ == "__main__":
 
 def main():
     st.title('時間割作成アプリ')
-
+    
     # 初めてアプリを実行するかどうかをチェック
     if "uploaded_data" not in st.session_state:
         st.session_state.uploaded_data = None
 
     # セッション状態にuploaded_dataが存在しない場合、アップローダーを表示
     if st.session_state.uploaded_data is None:
-        uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv")
+        uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type="csv", key="unique_file_uploader_key")
 
         if uploaded_file is not None:
             st.session_state.uploaded_data = pd.read_csv(uploaded_file)
+            lesson_df = st.session_state.uploaded_data
             st.write(st.session_state.uploaded_data)
-            generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
+            generate_timetable(lesson_df)
     else:
         # セッション状態にuploaded_dataが存在する場合、そのデータを表示
         st.write(st.session_state.uploaded_data)
-        generate_timetable(st.session_state.uploaded_data)  # 時間割作成関数を実行
-
-export_table(3,1)
+        lesson_df = st.session_state.uploaded_data
+        generate_timetable(lesson_df)
