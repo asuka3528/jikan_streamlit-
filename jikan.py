@@ -1,3 +1,4 @@
+#時間割の制約条件を緩和したプログラム８月１９日１７時時点
 #ライブラリのインポート
 import pandas as pd
 import numpy as np
@@ -67,17 +68,17 @@ for d in week:
                 model += pulp.lpSum([x[d,p,g,c,s] for s in subject_list]) == 1
 
  #(2)各教科sは1週間の必要授業数だけ行う
-for g in grade_list:
-    for c in class_dict[g]:
-        for s in subject_list:
-            model += pulp.lpSum([x[d,p,g,c,s] for d in week for p in period]) == subject_dict[s]
+# for g in grade_list:
+#     for c in class_dict[g]:
+#         for s in subject_list:
+#             model += pulp.lpSum([x[d,p,g,c,s] for d in week for p in period]) == subject_dict[s]
 
 # #(3)教科は 1 日の授業数の上下限を守る
-for d in week:
-    for g in grade_list:
-        for c in class_dict[g]:
-            for s in subject_list:
-                model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 3
+# for d in week:
+#     for g in grade_list:
+#         for c in class_dict[g]:
+#             for s in subject_list:
+#                 model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 3
 
 
 
@@ -172,7 +173,6 @@ def export_table(g,c):
         st.write("最適解を見つけることができませんでした。")
 
 def generate_timetable(lesson_df):
-    model = pulp.LpProblem("model", pulp.LpMinimize)
     # この部分にモデルの定義や最適化のコードを入れる
     
     # 最適解の確認と結果の表示
@@ -203,5 +203,5 @@ def main():
         st.write(st.session_state.uploaded_data)
         lesson_df = st.session_state.uploaded_data
         generate_timetable(lesson_df)
-    
-    main()
+
+export_table(3,1)
