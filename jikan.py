@@ -77,7 +77,7 @@ for d in week:
     for g in grade_list:
         for c in class_dict[g]:
             for s in subject_list:
-                model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 1
+                model += pulp.lpSum([x[d,p,g,c,s] for p in period]) <= 3
 
 
 
@@ -153,7 +153,7 @@ def export_table(g,c):
                     timetable_df.at[p, d] = s  # DataFrameに授業名を代入
 
     print(timetable_df)
-     
+
     # 最適解の確認と結果の表示
     if result_status == pulp.LpStatusOptimal:
         st.write("最適解を見つけました！")
@@ -163,8 +163,6 @@ def export_table(g,c):
     else:
         st.write("最適解を見つけることができませんでした。")
 
-if __name__ == "__main__":
-    main()
 
 def main():
     st.title('時間割作成アプリ')
