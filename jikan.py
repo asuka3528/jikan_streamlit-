@@ -14,9 +14,14 @@ st.title('Streamlit 時間割')
 uploaded_file = st.file_uploader("エクセルファイルをアップロードしてください", type=["xlsx"])
 
     # アップロードされたファイルを読み込む
+# アップロードされたファイルを読み込む
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
     st.write(df)
+
+    # ここでdfをlesson_dfにコピーして、後の処理に使用する
+    lesson_df = df.copy()
+
 
 
 
@@ -35,9 +40,6 @@ subject_dict = {s:n for s,n in zip(subject_list,[4,5,5,4,4,2,2,2,1,3])} #必要�
 
 # Excelを読み込む
 lesson_df = pd.read_excel("c:/Users/fssga/OneDrive/デスクトップ/Streamlit/時間割.xlsx")
-
-
-
 
 
 
