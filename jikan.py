@@ -10,6 +10,16 @@ import pandas as pd
 # タイトルとテキストを記入
 st.title('Streamlit 時間割')
 
+    # ファイルのアップロード
+uploaded_file = st.file_uploader("エクセルファイルをアップロードしてください", type=["xlsx"])
+
+    # アップロードされたファイルを読み込む
+if uploaded_file:
+    df = pd.read_excel(uploaded_file)
+    st.write(df)
+
+
+
 #基本情報のデータ
 teacher_list = [f'教員{i}' for i in range(22)]
 subject_list = ["英語","数学","国語","理科","社会","芸術","体育","情報","総合探究","自主自学"]
