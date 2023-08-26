@@ -24,7 +24,9 @@ subject_dict = {s:n for s,n in zip(subject_list,[4,5,5,4,4,2,2,2,1,3])} #必要�
 
 
 # Excelを読み込む
-lesson_df = pd.read_excel("./時間割.xlsx")
+lesson_df = pd.read_excel("c:/Users/fssga/OneDrive/デスクトップ/Streamlit/時間割.xlsx")
+
+
 
 
 
