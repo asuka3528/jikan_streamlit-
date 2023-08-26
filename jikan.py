@@ -22,8 +22,9 @@ Classroom_mobility = ["芸術","体育","情報","家庭科"] #移動教室授�
 six_period = ["総合探究","自主自学"] #6限のみの授業
 subject_dict = {s:n for s,n in zip(subject_list,[4,5,5,4,4,2,2,2,1,3])} #必要授業数
 
+
 # Excelを読み込む
-lesson_df = pd.read_excel("C:/Users/fssga/OneDrive/デスクトップ/時間割.xlsx")
+lesson_df = pd.read_excel("C:\時間割.xlsx")
 
 
 
